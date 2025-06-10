@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up">Manage Properties</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item"><a href="{% url 'listings:home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_dashboard' %}">Admin Dashboard</a></li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Properties</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      {% if messages %}
+        <div class="row">
+          <div class="col-lg-12">
+            {% for message in messages %}
+              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      <div class="row mb-3">
+        <div class="col-lg-12">
+          <a href="{% url 'listings_admin:admin_property_create' %}" class="btn btn-success">Add New Property</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12" data-aos="fade-up" data-aos-delay="100">
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title</th>
+                  <th>User</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Verified</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for listing in listings %}
+                  <tr>
+                    <td>
+                      {% with first_image=listing.images.first %}
+                        {% if first_image %}
+                          <img src="{{ first_image.image.url }}" alt="{{ listing.title }}" style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                        {% else %}
+                          <span>No Image</span>
+                        {% endif %}
+                      {% endwith %}
+                    </td>
+                    <td><a href="{% url 'listings_admin:admin_property_detail' listing.slug %}" class="text-primary" title="{{ listing.title }}">{{ listing.title|truncatewords:5 }}</a></td>
+                    <td>{{ listing.user.username }}</td>
+                    <td>{{ listing.category.name|default:"N/A" }}</td>
+                    <td>{{ listing.location|default:"N/A" }}</td>
+                    <td>${{ listing.price|floatformat:2 }}</td>
+                    <td>{{ listing.status }}</td>
+                    <td>
+                      <form action="{% url 'listings_admin:admin_property_verify' listing.slug %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="checkbox" {% if listing.is_verified %}checked{% endif %} onchange="this.form.submit()" class="form-check-input">
+                      </form>
+                    </td>
+                    <td>
+                      <a href="{% url 'listings_admin:admin_property_edit' listing.slug %}" class="btn btn-sm btn-primary">Edit</a>
+                      <a href="{% url 'listings_admin:admin_property_delete' listing.slug %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="9" class="text-center">No properties found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-lg-12">
+          <a href="{% url 'listings_admin:admin_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

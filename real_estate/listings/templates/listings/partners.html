@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading font-weight-bold text-white" data-aos="fade-up">Our Partners</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}" class="text-white">Home</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Partners</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section bg-light py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-center mb-4">
+            <h2 class="font-weight-bold text-primary heading mb-3">Our Partners</h2>
+            <p class="text-muted">Building strong relationships to enhance our real estate services.</p>
+          </div>
+          <div class="card mb-4 p-3 shadow-sm border-0">
+            <div class="card-body">
+              <p class="text-muted mb-3">We collaborate with leading real estate firms, financial institutions, and technology providers to deliver exceptional services to our clients.</p>
+              <p class="text-muted">Interested in partnering with us? Reach out at <a href="mailto:regalroofs.realestate@gmail.com" class="text-primary">regalroofs.realestate@gmail.com</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

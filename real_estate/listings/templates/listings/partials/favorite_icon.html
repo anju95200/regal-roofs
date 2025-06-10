@@ -1,0 +1,15 @@
+<!-- templates/partials/favorite_icon.html -->
+<div id="favorite-icon-{{ listing.id }}" hx-swap-oob="true">
+    <button
+        hx-post="{% url 'listings:favorite_toggle' slug=listing.slug %}"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        hx-swap="none"
+        class="love-icon"
+    >
+        {% if is_favorite %}
+            <i class="fa fa-heart clicked"></i>
+        {% else %}
+            <i class="fa fa-heart-o"></i>
+        {% endif %}
+    </button>
+</div>

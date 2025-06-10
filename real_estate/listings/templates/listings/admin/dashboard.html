@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up">Admin Dashboard</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Admin Dashboard</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section py-5 bg-light">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Properties -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="card border-0 shadow-sm h-100 hover-shadow transition hover-card">
+            <div class="card-body text-center py-4">
+              <div class="mb-3 text-primary">
+                <i class="bi bi-building fs-2"></i>
+              </div>
+              <h5 class="fw-semibold mb-1">Properties</h5>
+              <p class="text-muted mb-3">Total: {{ property_count }}</p>
+              <a href="{% url 'listings_admin:admin_properties' %}" class="btn btn-outline-primary btn-sm w-100 mb-2">Manage</a>
+              <a href="{% url 'listings_admin:admin_property_create' %}" class="btn btn-primary btn-sm w-100">Add New</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="card border-0 shadow-sm h-100 hover-shadow transition hover-card">
+            <div class="card-body text-center py-4">
+              <div class="mb-3 text-success">
+                <i class="bi bi-tag fs-2"></i>
+              </div>
+              <h5 class="fw-semibold mb-1">Categories</h5>
+              <p class="text-muted mb-3">Total: {{ category_count }}</p>
+              <a href="{% url 'listings_admin:admin_categories' %}" class="btn btn-outline-primary btn-sm w-100 mb-2">Manage</a>
+              <a href="{% url 'listings_admin:admin_category_create' %}" class="btn btn-primary btn-sm w-100">Add New</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Locations -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="card border-0 shadow-sm h-100 hover-shadow transition hover-card">
+            <div class="card-body text-center py-4">
+              <div class="mb-3 text-warning">
+                <i class="bi bi-geo-alt fs-2"></i>
+              </div>
+              <h5 class="fw-semibold mb-1">Locations</h5>
+              <p class="text-muted mb-3">Total: {{ location_count }}</p>
+              <a href="{% url 'listings_admin:admin_locations' %}" class="btn btn-outline-primary btn-sm w-100 mb-2">Manage</a>
+              <a href="{% url 'listings_admin:admin_location_create' %}" class="btn btn-primary btn-sm w-100">Add New</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+          <div class="card border-0 shadow-sm h-100 hover-shadow transition hover-card">
+            <div class="card-body text-center py-4">
+              <div class="mb-3 text-danger">
+                <i class="bi bi-people fs-2"></i>
+              </div>
+              <h5 class="fw-semibold mb-1">Users</h5>
+              <p class="text-muted mb-3">Total: {{ user_count }}</p>
+              <a href="{% url 'listings_admin:admin_users' %}" class="btn btn-outline-primary btn-sm w-100 mb-2">Manage</a>
+              <a href="{% url 'listings_admin:admin_user_create' %}" class="btn btn-primary btn-sm w-100">Add New</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

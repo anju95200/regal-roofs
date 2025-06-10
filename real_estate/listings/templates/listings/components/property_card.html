@@ -1,0 +1,64 @@
+{% load static %}
+{% load custom_filters %}
+{% load babel_filters %}
+
+<div class="property-item {{ custom_class|default:'' }}">
+  <div class="img-wrapper">
+    <!-- Verified Seal -->
+    {% if listing.is_verified %}
+      <div class="verified-seal">✔ Verified</div>
+    {% endif %}
+
+    <!-- Love Icon -->
+    {% if user.is_authenticated and listing.user != user %}
+      {% include 'listings/partials/favorite_icon.html' with listing=listing %}
+    {% endif %}
+
+    <a href="{% url 'listings:listing_detail' slug=listing.slug %}" class="img">
+      {% if listing.images.first %}
+        <img src="{{ listing.images.first.image.url }}" alt="{{ listing.title }}" class="list-img-fluid" />
+      {% else %}
+        <img src="{% static 'listings/images/img_1.jpg' %}" alt="{{ listing.title }}" class="list-img-fluid" />
+      {% endif %}
+    </a>
+  </div>
+
+  <div class="property-content">
+    <div class="price mb-2">
+      <span>{{ listing.price|inr_currency }}</span>
+    </div>
+    <div>
+      {% if listing.location.landmark %}
+        <span class="d-block mb-2 text-black-50 text-truncate">{{ listing.location.landmark }}</span>
+      {% else %}
+        <span class="d-block mb-2 text-black-50 text-truncate">No Landmark Available</span>
+      {% endif %}
+
+      <span class="city d-block mb-3 text-truncate">{{ listing.location }}</span>
+
+      <div class="specs d-flex mb-4">
+        <span class="d-block d-flex align-items-center me-3">
+          <span class="icon-bed me-2"></span>
+          {% if listing.bedrooms %}
+            <span class="caption">{{ listing.bedrooms }} beds</span>
+          {% else %}
+            <span class="caption">- &nbsp; &nbsp; &nbsp; &nbsp;</span>
+          {% endif %}
+        </span>
+        <span class="d-block d-flex align-items-center">
+          <span class="icon-bath me-2"></span>
+          {% if listing.bathrooms %}
+            <span class="caption">{{ listing.bathrooms }} baths</span>
+          {% else %}
+            <span class="caption">- &nbsp; &nbsp; &nbsp; &nbsp;</span>
+          {% endif %}
+        </span>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <a href="{% url 'listings:listing_detail' slug=listing.slug %}" class="btn btn-primary py-2 px-3">See details</a>
+        <span class="caption">{{ listing.created_at|smart_date }}</span>
+      </div>
+    </div>
+  </div>
+</div>

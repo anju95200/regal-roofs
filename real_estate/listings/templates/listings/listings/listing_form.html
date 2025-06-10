@@ -1,0 +1,407 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <style>
+    .preview-card {
+      background-color: #f8f9fa;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+    .preview-card:hover {
+      transform: translateY(-2px);
+    }
+    .preview-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #e9ecef;
+      transition: border-color 0.3s;
+    }
+    .preview-img:hover {
+      border-color: #007bff;
+    }
+    .filename-badge {
+      background-color: #e9ecef;
+      color: #495057;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      margin-left: 10px;
+    }
+    .delete-icon {
+      color: #dc3545;
+      font-size: 1.2rem;
+      transition: color 0.3s, transform 0.2s;
+      text-decoration: none;
+    }
+    .delete-icon:hover {
+      color: #b02a37;
+      transform: scale(1.2);
+    }
+    .new-preview {
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    .placeholder-img {
+      width: 100px;
+      height: 100px;
+      background-color: #e9ecef;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      font-size: 1.5rem;
+    }
+    .input-group-text {
+      background-color: #f8f9fa;
+    }
+    .toggle-password {
+      cursor: pointer;
+      padding: 0 10px;
+    }
+    .input-group textarea.form-control {
+      height: auto;
+      resize: vertical;
+      min-height: 120px;
+    }
+    .input-group select {
+      height: 52px;
+      min-height: 52px;
+    }
+  </style>
+
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:listing_list' %}">Properties</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">{{ title }}</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7">
+          <div class="text-center mb-4">
+            <h2 class="font-weight-bold text-primary heading mb-3">{{ title }}</h2>
+          </div>
+          {% if form.errors or formset.errors %}
+            <div class="alert alert-danger alert-dismissible fade show mb-4 border-0 bg-light">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <strong>Please fix the following errors:</strong>
+              <ul class="mb-0 mt-2">
+                {% for field in form %}
+                  {% for error in field.errors %}
+                    <li>{{ error|escape }}</li>
+                  {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                  <li>{{ error|escape }}</li>
+                {% endfor %}
+                {% for form in formset %}
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <li>{{ error|escape }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                {% endfor %}
+                {% for error in formset.non_form.errors %}
+                  <li>{{ error|escape }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          <form method="post" enctype="multipart/form-data" class="card p-4 shadow" id="listing-form">
+            {% csrf_token %}
+            <div class="alert alert-info bg-primary bg-opacity-10 border-0 mb-4" role="alert">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>All fields marked with *</strong> are required to create your listing.
+            </div>
+            <!-- Form Fields -->
+            <div class="row g-3">
+              <!-- Title Field -->
+              <div class="col-12">
+                <label for="{{ form.title.id_for_label }}" class="form-label fw-bold"><i class="fas fa-heading me-2"></i>Title <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-heading"></i></span>
+                  <label for="{{ form.title.id_for_label }}" class="form-label visually-hidden">Title</label>
+                  <input type="text" name="title" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default_if_none:'' }}" class="form-control">
+                  {% if form.title.errors %}
+                    <div class="text-danger small mt-1">{{ form.title.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Description Field -->
+              <div class="col-12">
+                <label for="{{ form.description.id_for_label }}" class="form-label fw-bold"><i class="fas fa-align-left me-2"></i>Description <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                  <label for="{{ form.description.id_for_label }}" class="form-label visually-hidden">Description</label>
+                  <textarea name="description" id="{{ form.description.id_for_label }}" class="form-control">{{ form.description.value|default_if_none:'' }}</textarea>
+                  {% if form.description.errors %}
+                    <div class="text-danger small mt-1">{{ form.description.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Price Field -->
+              <div class="col-md-6">
+                <label for="{{ form.price.id_for_label }}" class="form-label fw-bold"><i class="fas fa-dollar-sign me-2"></i>Price <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                  <label for="{{ form.price.id_for_label }}" class="form-label visually-hidden">Price</label>
+                  <input type="number" name="price" id="{{ form.price.id_for_label }}" value="{{ form.price.value|default_if_none:'' }}" class="form-control">
+                  {% if form.price.errors %}
+                    <div class="text-danger small mt-1">{{ form.price.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Listing Type Field -->
+              <div class="col-md-6">
+                <label for="{{ form.listing_type.id_for_label }}" class="form-label fw-bold"><i class="fas fa-tag me-2"></i>Listing Type <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                  <label for="{{ form.listing_type.id_for_label }}" class="form-label visually-hidden">Listing Type</label>
+                  <select name="listing_type" id="{{ form.listing_type.id_for_label }}" class="form-select">
+                    <option value="">Select Listing Type</option>
+                    {% for option in form.listing_type.field.choices %}
+                      <option value="{{ option.0 }}" {% if option.0 == form.listing_type.value %} selected {% endif %}>{{ option.1 }}</option>
+                    {% endfor %}
+                  </select>
+                  {% if form.listing_type.errors %}
+                    <div class="text-danger small mt-1">{{ form.listing_type.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Category Field -->
+              <div class="col-md-6">
+                <label for="{{ form.category.id_for_label }}" class="form-label fw-bold"><i class="fas fa-folder me-2"></i>Category <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-folder"></i></span>
+                  <label for="{{ form.category.id_for_label }}" class="form-label visually-hidden">Category</label>
+                  <select name="category" id="{{ form.category.id_for_label }}" class="form-select">
+                    <option value="">Select Category</option>
+                    {% for option in form.category.field.choices %}
+                      <option value="{{ option.0 }}" {% if option.0 == form.category.value %} selected {% endif %}>{{ option.1 }}</option>
+                    {% endfor %}
+                  </select>
+                  {% if form.category.errors %}
+                    <div class="text-danger small mt-1">{{ form.category.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- City Field -->
+              <div class="col-md-6">
+                <label for="{{ form.city.id_for_label }}" class="form-label fw-bold"><i class="fas fa-city me-2"></i>City <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-city"></i></span>
+                  <label for="{{ form.city.id_for_label }}" class="form-label visually-hidden">City</label>
+                  <input type="text" name="city" id="{{ form.city.id_for_label }}" value="{{ form.city.value|default_if_none:'' }}" class="form-control">
+                  {% if form.city.errors %}
+                    <div class="text-danger small mt-1">{{ form.city.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Landmark Field -->
+              <div class="col-md-12">
+                <label for="{{ form.landmark.id_for_label }}" class="form-label fw-bold"><i class="fas fa-map-marker-alt me-2"></i>Landmark <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                  <label for="{{ form.landmark.id_for_label }}" class="form-label visually-hidden">Landmark</label>
+                  <input type="text" name="landmark" id="{{ form.landmark.id_for_label }}" value="{{ form.landmark.value|default_if_none:'' }}" class="form-control">
+                  {% if form.landmark.errors %}
+                    <div class="text-danger small mt-1">{{ form.landmark.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- State Field -->
+              <div class="col-md-6">
+                <label for="{{ form.state.id_for_label }}" class="form-label fw-bold"><i class="fas fa-map me-2"></i>State <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-map"></i></span>
+                  <label for="{{ form.state.id_for_label }}" class="form-label visually-hidden">State</label>
+                  <input type="text" name="state" id="{{ form.state.id_for_label }}" value="{{ form.state.value|default_if_none:'' }}" class="form-control">
+                  {% if form.state.errors %}
+                    <div class="text-danger small mt-1">{{ form.state.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Country Field -->
+              <div class="col-md-6">
+                <label for="{{ form.country.id_for_label }}" class="form-label fw-bold"><i class="fas fa-globe me-2"></i>Country <span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                  <label for="{{ form.country.id_for_label }}" class="form-label visually-hidden">Country</label>
+                  <input type="text" name="country" id="{{ form.country.id_for_label }}" value="{{ form.country.value|default_if_none:'' }}" class="form-control">
+                  {% if form.country.errors %}
+                    <div class="text-danger small mt-1">{{ form.country.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Bedrooms Field -->
+              <div class="col-md-4">
+                <label for="{{ form.bedrooms.id_for_label }}" class="form-label fw-bold"><i class="fas fa-bed me-2"></i>Bedrooms</label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-bed"></i></span>
+                  <label for="{{ form.bedrooms.id_for_label }}" class="form-label visually-hidden">Bedrooms</label>
+                  <input type="number" name="bedrooms" id="{{ form.bedrooms.id_for_label }}" value="{{ form.bedrooms.value|default_if_none:'' }}" class="form-control">
+                  {% if form.bedrooms.errors %}
+                    <div class="text-danger small mt-1">{{ form.bedrooms.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Bathrooms Field -->
+              <div class="col-md-4">
+                <label for="{{ form.bathrooms.id_for_label }}" class="form-label fw-bold"><i class="fas fa-bath me-2"></i>Bathrooms</label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-bath"></i></span>
+                  <label for="{{ form.bathrooms.id_for_label }}" class="form-label visually-hidden">Bathrooms</label>
+                  <input type="number" name="bathrooms" id="{{ form.bathrooms.id_for_label }}" value="{{ form.bathrooms.value|default_if_none:'' }}" class="form-control">
+                  {% if form.bathrooms.errors %}
+                    <div class="text-danger small mt-1">{{ form.bathrooms.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Area Field -->
+              <div class="col-md-4">
+                <label for="{{ form.area.id_for_label }}" class="form-label fw-bold"><i class="fas fa-ruler-combined me-2"></i>Area (sq ft)</label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-ruler-combined"></i></span>
+                  <label for="{{ form.area.id_for_label }}" class="form-label visually-hidden">Area (sq ft)</label>
+                  <input type="number" name="area" id="{{ form.area.id_for_label }}" value="{{ form.area.value|default_if_none:'' }}" class="form-control">
+                  {% if form.area.errors %}
+                    <div class="text-danger small mt-1">{{ form.area.errors.as_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <!-- Image Upload Section -->
+            <div class="mt-4">
+              <div class="h5 mb-3"><i class="fas fa-images me-2"></i>Images</div>
+              {{ formset.management_form }}
+              <div class="row g-3" id="image-formset">
+                {% for form in formset %}
+                  <div class="col-12 mb-3">
+                    {{ form.as_p }}
+                    {% if form.instance.image %}
+                      <img src="{{ form.instance.image.url }}" alt="Property Image" class="img-fluid mb-2" style="max-width: 200px;" />
+                    {% endif %}
+                    {% if form.errors %}
+                      <div class="text-danger text-sm">{{ form.errors }}</div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <!-- Submit Button -->
+            <div class="mt-4 text-center">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Save Listing</button>
+              <a href="{% url 'listings:listing_list' %}" class="btn btn-primary"><i class="fas fa-times me-2"></i>Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- JavaScript for Image Preview and Deletion -->
+  <script src="https://kit.fontawesome.com/a076d057e33.js" crossorigin="anonymous"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const imageFormset = document.querySelector('#image-formset');
+      // Handle image preview for new uploads
+      imageFormset.addEventListener('change', function(e) {
+        if (e.target.classList.contains('image-input')) {
+          const formDiv = e.target.closest('.image-form');
+          const formId = formDiv.dataset.formId;
+          const previewContainer = formDiv.querySelector('.image-preview');
+          const previewImg = previewContainer.querySelector('.preview-img');
+          const placeholder = previewContainer.querySelector('.placeholder-img');
+          const filenameBadge = document.getElementById(`filename-${formId}`);
+          const deleteIcon = formDiv.querySelector('.delete-image');
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              previewImg.src = e.target.result;
+              previewImg.style.display = '';
+              placeholder.style.display = 'none';
+              previewContainer.style.display = 'block';
+              filenameBadge.textContent = file.name;
+              deleteIcon.style.display = '';
+            };
+            reader.readAsDataURL(file);
+          } else {
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+            placeholder.style.display = '';
+            previewContainer.style.display = 'none';
+            filenameBadge.textContent = '';
+            deleteIcon.style.display = 'none';
+          }
+        }
+      });
+      // Handle delete button clicks
+      imageFormset.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-image')) {
+          e.preventDefault();
+          const deleteIcon = e.target.closest('.delete-image');
+          const formId = deleteIcon.dataset.formId;
+          const formDiv = document.getElementById(`image-${formId}`);
+          const deleteCheckbox = formDiv.querySelector('.delete-checkbox');
+          const previewContainer = formDiv.querySelector('.image-preview');
+          const imageInput = formDiv.querySelector('.image-input');
+          // Hide the preview card
+          formDiv.style.display = 'none';
+          // Mark for deletion
+          deleteCheckbox.checked = true;
+          // Clear the file input
+          imageInput.value = '';
+          // Add undo button
+          const undoBtn = document.createElement('button');
+          undoBtn.type = 'button';
+          undoBtn.className = 'btn btn-secondary btn-sm mt-2';
+          undoBtn.textContent = 'Undo Delete';
+          undoBtn.addEventListener('click', function() {
+            formDiv.style.display = '';
+            deleteCheckbox.checked = false;
+            previewContainer.style.display = 'block';
+            undoBtn.remove();
+          });
+          formDiv.parentNode.insertBefore(undoBtn, formDiv.nextSibling);
+        }
+      });
+      // Clean up object URLs on page unload
+      window.addEventListener('unload', function() {
+        const previewImgs = document.querySelectorAll('.preview-img');
+        previewImgs.forEach(img => {
+          if (img.src.startsWith('blob:')) {
+            URL.revokeObjectURL(img.src);
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

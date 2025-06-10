@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading font-weight-bold text-white" data-aos="fade-up">Terms of Service</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}" class="text-white">Home</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Terms</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section bg-light py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-center mb-4">
+            <h2 class="font-weight-bold text-primary heading mb-3">Terms of Service</h2>
+            <p class="text-muted">Understand the guidelines for using our real estate platform.</p>
+          </div>
+          <div class="card mb-4 p-3 shadow-sm border-0">
+            <div class="card-body">
+              <p class="text-muted mb-3">By using our platform, you agree to comply with our terms of service, which govern the use of our website and services. This includes responsible use of our listing features, respect for intellectual property, and adherence to local laws.</p>
+              <p class="text-muted">For detailed terms, please contact our support team at <a href="mailto:regalroofs.realestate@gmail.com" class="text-primary">regalroofs.realestate@gmail.com</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

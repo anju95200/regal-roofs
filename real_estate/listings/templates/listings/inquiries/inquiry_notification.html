@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>New Inquiry Notification</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #007bff;">New Inquiry for Your Property: {{ listing_title }}</h2>
+    <p>Dear {{ owner_name }},</p>
+    <p>
+      You have received a new inquiry for your property <strong>{{ listing_title }}</strong> from <strong>{{ sender_username }}</strong>.
+    </p>
+    <h4 style="color: #333;">Property Details:</h4>
+    <ul style="list-style: none; padding: 0;">
+      <li>
+        <strong>Type:</strong> {{ listing_type }}
+      </li>
+      <li>
+        <strong>Price:</strong> {{ listing_price }}
+      </li>
+      <li>
+        <strong>Location:</strong> {{ location }}
+      </li>
+    </ul>
+    <p>
+      <strong>Message:</strong>
+    </p>
+    <p style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">{{ message }}</p>
+    <p>
+      <strong>Contact the sender at:</strong> <a href="mailto:{{ sender_email }}" style="color: #007bff;">{{ sender_email }}</a>
+    </p>
+    {% if listing_url != 'Not available' %}
+      <p>
+        <strong>View the listing:</strong> <a href="{{ listing_url }}" style="color: #007bff;">{{ listing_title }}</a>
+      </p>
+    {% endif %}
+    <p>View the inquiry in your dashboard for more details.</p>
+    <p style="margin-top: 30px;">
+      Best regards,<br />Your Property Platform Team
+    </p>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up">Edit Category: {{ category.name }}</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item"><a href="{% url 'listings:home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_dashboard' %}">Admin Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_categories' %}">Categories</a></li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">{{ category.name }}</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="100">
+          <form method="post">
+            {% csrf_token %}
+            <div class="row">
+              {% for field in form %}
+              <div class="col-12 mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                  <div class="text-danger text-sm">{{ field.errors }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+              <div class="col-12">
+                <input type="submit" value="Save Changes" class="btn btn-primary me-2" />
+                <a href="{% url 'listings_admin:admin_categories' %}" class="btn btn-secondary">Cancel</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

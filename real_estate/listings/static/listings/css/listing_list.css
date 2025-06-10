@@ -1,0 +1,78 @@
+
+
+.filter-sidebar .card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-sidebar .card-header {
+    background-color: #f8f9fa;
+    border-bottom: none;
+    padding: 15px;
+}
+
+.filter-sidebar .card-body {
+    padding: 20px;
+}
+
+.filter-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.filter-form label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.filter-form .form-control {
+    width: 100%;
+    padding: 8px;
+}
+
+.filter-form .form-control:disabled {
+    background-color: #e9ecef;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.filter-form .btn {
+    margin-top: 1rem;
+    margin-right: 0.5rem;
+    width: 45%;
+}
+
+.custom-pagination a {
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.custom-pagination a.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.custom-pagination a:hover:not(.active) {
+    background-color: #f8f9fa;
+}
+
+.property-slider-wrap {
+    margin-bottom: 2rem;
+}
+
+.alert-info {
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+@media (max-width: 991px) {
+    .filter-sidebar {
+        margin-bottom: 2rem;
+    }
+}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up">FAQ</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">FAQ</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section bg-light py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-center mb-4">
+            <h2 class="font-weight-bold text-primary heading mb-3">Frequently Asked Questions</h2>
+          </div>
+          <div class="mb-4 shadow-sm">
+            <div class="accordion" id="faqAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">How do I list a property?</button></h2>
+                <div id="faq1" class="accordion-collapse collapse show">
+                  <div class="accordion-body">Sign up, navigate to the "Create Listing" page, and fill out the property details form.</div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">How can I contact support?</button></h2>
+                <div id="faq2" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    Reach us at <a href="mailto:regalroofs.realestate@gmail.com">regalroofs.realestate@gmail.com</a> or call +91 8838 279 668.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">What types of properties can I list?</button></h2>
+                <div id="faq3" class="accordion-collapse collapse">
+                  <div class="accordion-body">You can list residential, commercial, and rental properties, including houses, apartments, and land.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

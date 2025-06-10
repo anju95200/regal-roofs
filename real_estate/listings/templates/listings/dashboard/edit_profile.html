@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <style>
+    .preview-card {
+      background-color: #f8f9fa;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+    .preview-card:hover {
+      transform: translateY(-2px);
+    }
+    .preview-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #e9ecef;
+      transition: border-color 0.3s;
+    }
+    .preview-img:hover {
+      border-color: #007bff;
+    }
+    .filename-badge {
+      background-color: #e9ecef;
+      color: #495057;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      margin-left: 10px;
+    }
+    .delete-icon {
+      color: #dc3545;
+      font-size: 1.2rem;
+      transition: color 0.3s, transform 0.2s;
+      text-decoration: none;
+    }
+    .delete-icon:hover {
+      color: #b02a37;
+      transform: scale(1.2);
+    }
+    .new-preview {
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    .placeholder-img {
+      width: 100px;
+      height: 100px;
+      background-color: #e9ecef;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      font-size: 1.5rem;
+    }
+  </style>
+  
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}'); min-height: 300px;">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading text-white">Edit Profile</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Edit Profile</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="section bg-light py-5">
+    <div class="container">
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+              <strong>{{ message|title }}!</strong> {{ message|striptags }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="text-center mb-4">
+            <h2 class="font-weight-bold text-primary heading mb-3">Edit Profile</h2>
+            <p class="text-muted">Update your profile information</p>
+          </div>
+          
+          <div class="card p-4 shadow-sm border-0">
+            {% if user_form.errors or profile_form.errors %}
+              <div class="alert alert-danger alert-dismissible fade show mb-4 border-0 bg-light">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Please fix the following errors:</strong>
+                <ul class="mb-0 mt-2">
+                  {% for field in user_form %}
+                    {% for error in field.errors %}
+                      <li>{{ error|escape }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {% for error in user_form.non_field_errors %}
+                    <li>{{ error|escape }}</li>
+                  {% endfor %}
+                  {% for field in profile_form %}
+                    {% for error in field.errors %}
+                      <li>{{ error|escape }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {% for error in profile_form.non_field_errors %}
+                    <li>{{ error|escape }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+            
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+              {% csrf_token %}
+              
+              <div class="mb-3">
+                <label for="{{ user_form.first_name.id_for_label }}" class="form-label fw-bold">
+                  <i class="fas fa-user me-2"></i>First Name
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  {{ user_form.first_name }}
+                </div>
+                {% if user_form.first_name.errors %}
+                  <div class="invalid-feedback d-block">
+                    {{ user_form.first_name.errors|join:", " }}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="mb-3">
+                <label for="{{ user_form.last_name.id_for_label }}" class="form-label fw-bold">
+                  <i class="fas fa-user me-2"></i>Last Name
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  {{ user_form.last_name }}
+                </div>
+                {% if user_form.last_name.errors %}
+                  <div class="invalid-feedback d-block">
+                    {{ user_form.last_name.errors|join:", " }}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="mb-3">
+                <label for="{{ user_form.username.id_for_label }}" class="form-label fw-bold">
+                  <i class="fas fa-at me-2"></i>Username
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-at"></i></span>
+                  {{ user_form.username }}
+                </div>
+                {% if user_form.username.errors %}
+                  <div class="invalid-feedback d-block">
+                    {{ user_form.username.errors|join:", " }}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="mb-3">
+                <label for="{{ user_form.email.id_for_label }}" class="form-label fw-bold">
+                  <i class="fas fa-envelope me-2"></i>Email
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  {{ user_form.email }}
+                </div>
+                {% if user_form.email.errors %}
+                  <div class="invalid-feedback d-block">
+                    {{ user_form.email.errors|join:", " }}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="mb-3">
+                <label for="{{ profile_form.phone_number.id_for_label }}" class="form-label fw-bold">
+                  <i class="fas fa-phone me-2"></i>Phone Number
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                  {{ profile_form.phone_number }}
+                </div>
+                {% if profile_form.phone_number.errors %}
+                  <div class="invalid-feedback d-block">
+                    {{ profile_form.phone_number.errors|join:", " }}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="mb-4">
+                <label for="{{ profile_form.profile_picture.id_for_label }}" class="form-label fw-bold">
+                  <i class="fas fa-image me-2"></i>Profile Picture
+                </label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fas fa-upload"></i></span>
+                  {{ profile_form.profile_picture }}
+                  <span class="input-group-text"><i class="fas fa-times"></i></span>
+                  {{ profile_form.delete_profile_picture }}
+                </div>
+                <p class="mt-2 text-muted">Select a new image to upload (JPG, PNG recommended).</p>
+                
+                {% if user.profile.profile_picture %}
+                  <div class="preview-card" id="current-picture">
+                    <div class="d-flex align-items-center">
+                      <img src="{{ user.profile.profile_picture.url }}" alt="Current Profile Picture" class="preview-img me-3" />
+                      <div>
+                        <span class="filename-badge">{{ user.profile.profile_picture.name|cut:'profile_pics/' }}</span>
+                        
+                      </div>
+                      <div>
+                        
+                        <a href="#" id="delete-picture" class="delete-icon ms-2" title="Delete profile picture">
+                          <i class="fas fa-trash-alt"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+                
+                <div class="preview-card" id="new-picture-preview" style="display: none;">
+                  <div class="d-flex align-items-center new-preview">
+                    <div id="new-picture-placeholder" class="placeholder-img me-3">
+                      <i class="fas fa-user"></i>
+                    </div>
+                    <img id="new-picture-img" alt="New Profile Picture" class="preview-img me-3" style="display: none;" />
+                    <div>
+                      <span class="filename-badge" id="new-picture-name"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                {% if profile_form.profile_picture.errors %}
+                  <div class="invalid-feedback d-block">
+                    {{ profile_form.profile_picture.errors|join:", " }}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-save me-2"></i>Update Profile
+                  </button>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <a href="{% url 'listings:dashboard' %}" class="btn btn-dark text-white w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://kit.fontawesome.com/a076d057e33.js" crossorigin="anonymous"></script>
+  
+  <script>
+    let isDeleted = false
+    
+    document.getElementById('delete-picture').addEventListener('click', function (e) {
+      e.preventDefault()
+      isDeleted = true
+      document.getElementById('current-picture').style.display = 'none'
+      document.getElementById('id_delete_profile_picture').value = 'true'
+      document.getElementById('id_profile_picture').value = ''
+      document.getElementById('new-picture-preview').style.display = 'none'
+    })
+    
+    document.getElementById('id_profile_picture').addEventListener('change', function (e) {
+      document.getElementById('id_delete_profile_picture').value = ''
+      isDeleted = false
+      const currentPicture = document.getElementById('current-picture')
+      if (currentPicture) currentPicture.style.display = 'none'
+      const file = e.target.files[0]
+      const previewContainer = document.getElementById('new-picture-preview')
+      const previewName = document.getElementById('new-picture-name')
+      const previewImg = document.getElementById('new-picture-img')
+      const placeholder = document.getElementById('new-picture-placeholder')
+      if (file) {
+        previewName.textContent = file.name
+        previewImg.src = URL.createObjectURL(file)
+        previewImg.style.display = ''
+        placeholder.style.display = 'none'
+        previewContainer.style.display = ''
+      } else {
+        previewName.textContent = ''
+        previewImg.style.display = 'none'
+        placeholder.style.display = ''
+        previewContainer.style.display = 'none'
+      }
+    })
+    
+    window.addEventListener('unload', function () {
+      const previewImg = document.getElementById('new-picture-img')
+      if (previewImg.src) {
+        URL.revokeObjectURL(previewImg.src)
+      }
+    })
+    
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      }
+    });
+  </script>
+{% endblock %}

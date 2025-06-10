@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load babel_filters %}
+
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up" title="{{ listing.title }}">{{ listing.title|truncatewords:5 }}</h1>
+
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:listing_list' %}">Properties</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50 text-truncate" aria-current="page">{{ listing.title|truncatewords:3 }}</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="py-5 bg-light">
+    <div class="container">
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="row gy-4 justify-content-between flex-wrap align-items-stretch">
+        <div class="col-lg-8 col-12 d-flex flex-column">
+          <div class="card shadow-sm border-0 flex-grow-1">
+            <div class="card-body text-center">
+              <div class="img-property-slide-wrap">
+                <div class="img-property-slide">
+                  {% for image in listing.images.all %}
+                    <img src="{{ image.image.url }}" alt="{{ listing.title }}" class="img-fluid rounded list-details-img-fluid" style="max-height: 400px;" />
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body text-center">
+              {% if listing.user.profile.profile_picture %}
+                <img src="{{ listing.user.profile.profile_picture.url }}" alt="Agent Image" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;" />
+              {% else %}
+                <img src="{% static 'listings/images/default_profile.jpg' %}" alt="Agent Image" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;" />
+              {% endif %}
+              <h5 class="card-title">
+                Posted by <strong>
+                  {% if listing.user == request.user %}
+                    You
+                  {% else %}
+                    {{ listing.user.first_name }} {{ listing.user.last_name }}
+                  {% endif %}
+                </strong>
+              </h5>
+              <p class="mb-2">
+                <strong>{{ listing.user.email|mask_email }}</strong> |
+                <strong>{{ listing.user.profile.phone_number|mask_phone }}</strong>
+              </p>
+              <p class="text-muted mb-0">Member since {{ listing.user.date_joined|smart_date }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-12">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h2 class="card-title text-primary mb-3">{{ listing.title }}</h2>
+              <p class="text-success fw-bold fs-4 mb-3">{{ listing.price|inr_currency }}</p>
+              <h6 class="mb-4">{{ listing.location }}</h6>
+              <p class="text-dark">{{ listing.description }}</p>
+              <hr />
+              <div class="mb-3">
+                <p class="mb-1">
+                  <strong>Type:</strong> {{ listing.get_listing_type_display }}
+                </p>
+                <p class="mb-1">
+                  <strong>Status:</strong> {{ listing.get_status_display }}
+                </p>
+                <p class="mb-1">
+                  <strong>Category:</strong> {{ listing.category.name }}
+                </p>
+                {% if listing.bedrooms %}
+                  <p class="mb-1">
+                    <strong>Bedrooms:</strong> {{ listing.bedrooms }}
+                  </p>
+                {% endif %}
+                {% if listing.bathrooms %}
+                  <p class="mb-1">
+                    <strong>Bathrooms:</strong> {{ listing.bathrooms }}
+                  </p>
+                {% endif %}
+                {% if listing.area %}
+                  <p class="mb-1">
+                    <strong>Area:</strong> {{ listing.area }} sq ft
+                  </p>
+                {% endif %}
+              </div>
+              <hr />
+              <div class="d-grid gap-2">
+                {% if user.is_authenticated and listing.user != user %}
+                  {% if listing.status == 'available' %}
+                    {% include 'listings/partials/favorite_button.html' %}
+                    <a href="{% url 'listings:inquiry_create' slug=listing.slug %}" class="btn btn-primary">Send Inquiry</a>
+                  {% endif %}
+                {% endif %}
+                {% if user.is_authenticated and listing.user == user %}
+                  <div class="d-flex flex-column flex-sm-row gap-2">
+                    <a href="{% url 'listings:listing_update' slug=listing.slug %}" class="btn btn-primary w-100">Edit</a>
+                    <a href="{% url 'listings:listing_delete' slug=listing.slug %}" class="btn btn-danger w-100">Delete</a>
+                  </div>
+                  {% if listing.status == 'available' %}
+                    <form action="{% url 'listings:listing_mark_status' slug=listing.slug %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="mark" />
+                      <button type="submit" class="btn btn-warning w-100 mt-2">
+                        {% if listing.listing_type == 'sale' %}
+                          Mark as Sold
+                        {% else %}
+                          Mark as Rented
+                        {% endif %}
+                      </button>
+                    </form>
+                  {% elif listing.status in 'sold,rented' %}
+                    <form action="{% url 'listings:listing_mark_status' slug=listing.slug %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="unmark" />
+                      <button type="submit" class="btn btn-success w-100 mt-2">Mark as Available</button>
+                    </form>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .btn-favorite {
+      background-color: #fff;
+      border: 1px solid #dc3545;
+      color: #dc3545;
+      transition: all 0.3s ease;
+    }
+    .btn-favorite:hover,
+    .btn-favorite.active {
+      background-color: #dc3545;
+      color: #fff;
+      border-color: #dc3545;
+    }
+    .btn-favorite i {
+      margin-right: 5px;
+    }
+    
+    .img-property-slide {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .img-property-slide img {
+      scroll-snap-align: start;
+      flex: 0 0 auto;
+      border-radius: 8px;
+    }
+    .img-property-slide-wrap {
+      max-height: 450px;
+      overflow: hidden;
+    }
+    
+    @media (max-width: 768px) {
+      .card-body h2,
+      .card-body h5 {
+        text-align: center;
+      }
+      .breadcrumb {
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+{% endblock %}

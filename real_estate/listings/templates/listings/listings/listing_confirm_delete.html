@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <style>
+    .delete-card {
+      background-color: #f8f9fa;
+      border: none;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    .delete-card:hover {
+      transform: translateY(-2px);
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    .delete-icon {
+      color: #dc3545;
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+    .btn-danger,
+    .btn-secondary {
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-danger:hover {
+      background-color: #b02a37;
+      transform: scale(1.05);
+    }
+    .btn-secondary:hover {
+      background-color: #5c636a;
+      transform: scale(1.05);
+    }
+  </style>
+
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}'); min-height: 300px;">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading text-white">Delete Listing</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Delete Listing</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="min-height: calc(100vh - 300px - 56px); padding: 3rem 0;">
+    <div class="container">
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <h2 class="font-weight-bold text-primary heading mb-4">Delete {{ listing.title }}</h2>
+          <div class="card delete-card">
+            <div class="card-body">
+              <p class="mb-4">
+                Are you sure you want to delete the listing <strong>{{ listing.title }}</strong>? This action cannot be undone.
+              </p>
+              <form method="post">
+                {% csrf_token %}
+                <div class="text-center">
+                  <button type="submit" class="btn btn-danger me-2">Confirm Delete</button>
+                  <a href="{% url 'listings:listing_detail' slug=listing.slug %}" class="btn btn-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}'); min-height: 300px;">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading text-white">Register</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Register</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section bg-light py-5">
+    <div class="container">
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+              <strong>{{ message|title }}!</strong> {{ message|striptags }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="text-center mb-4">
+            <h2 class="font-weight-bold text-primary heading mb-3">Create Your Account</h2>
+            <p class="text-muted">Join us and explore the best listings!</p>
+          </div>
+
+          <div class="card p-4 shadow-sm border-0">
+            <form method="post" class="needs-validation" novalidate>
+              {% csrf_token %}
+
+              <div class="mb-3">
+                <label for="first_name" class="form-label fw-bold">First Name</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <input type="text" name="first_name" id="first_name" class="form-control" required />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="last_name" class="form-label fw-bold">Last Name</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <input type="text" name="last_name" id="last_name" class="form-control" required />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="username" class="form-label fw-bold">Username</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-at"></i></span>
+                  <input type="text" name="username" id="username" class="form-control" required />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label fw-bold">Email</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  <input type="email" name="email" id="email" class="form-control" required />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="phone_number" class="form-label fw-bold">Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                  <input type="text" name="phone_number" id="phone_number" class="form-control" required />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="password1" class="form-label fw-bold">Password</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-key"></i></span>
+                  <input type="password" name="password1" id="password1" class="form-control" required />
+                  <span class="input-group-text toggle-password" type="button" data-target="password1"><i class="fas fa-eye"></i></span>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="password2" class="form-label fw-bold">Confirm Password</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                  <input type="password" name="password2" id="password2" class="form-control" required />
+                  <span class="input-group-text toggle-password" type="button" data-target="password2"><i class="fas fa-eye"></i></span>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <a href="{% provider_login_url 'google' %}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+                  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" width="20" height="20" class="me-2" />
+                  <span>Sign up with Google</span>
+                </a>
+              </div>
+
+              <div class="d-grid mt-3">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus me-2"></i> Register</button>
+              </div>
+
+              <div class="text-center mt-3">
+                <p class="small mb-0">
+                  Already have an account?
+                  <a href="{% url 'listings:login' %}" class="text-primary text-decoration-none">Sign In</a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.toggle-password').forEach(function (el) {
+      el.addEventListener('click', function () {
+        const target = document.getElementById(el.getAttribute('data-target'))
+        if (target.type === 'password') {
+          target.type = 'text'
+          el.innerHTML = '<i class="fas fa-eye-slash"></i>'
+        } else {
+          target.type = 'password'
+          el.innerHTML = '<i class="fas fa-eye"></i>'
+        }
+      })
+    })
+  </script>
+{% endblock %}

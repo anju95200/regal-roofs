@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up">User: {{ user.username }}</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item"><a href="{% url 'listings:home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_dashboard' %}">Admin Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_users' %}">Users</a></li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">{{ user.username }}</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-up" data-aos-delay="100">
+          <div class="contact-info">
+            <div class="mt-2">
+              <h4 class="mb-2">Username</h4>
+              <p>{{ user.username }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Email</h4>
+              <p>{{ user.email|default:"N/A" }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Phone</h4>
+              <p>{{ user.profile.phone_number|default:"N/A" }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="contact-info">
+            <div class="mt-2">
+              <h4 class="mb-2">Is Admin</h4>
+              <p>{{ user.is_superuser|yesno:"Yes,No" }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Is Staff</h4>
+              <p>{{ user.is_staff|yesno:"Yes,No" }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Joined</h4>
+              <p>{{ user.date_joined }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Profile Created</h4>
+              <p>{{ user.profile.created_at|default:"N/A" }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 mt-4">
+          <a href="{% url 'listings_admin:admin_users' %}" class="btn btn-primary">Back to Users</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up" title="Edit {{ listing.title }}">Edit {{ listing.title|truncatewords:5 }}</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item"><a href="{% url 'listings:home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_dashboard' %}">Admin Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_properties' %}">Properties</a></li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">{{ listing.title|truncatewords:3 }}</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="100">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4 class="mb-3">Property Details</h4>
+            <div class="row">
+              {% for field in form %}
+                <div class="col-12 mb-3">
+                  {{ field.label_tag }}
+                  {{ field }}
+                  {% if field.errors %}
+                    <div class="text-danger text-sm">{{ field.errors }}</div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+            <h4 class="mb-3 mt-4">Property Images</h4>
+            {{ formset.management_form }}
+            <div class="row">
+              {% for form in formset %}
+                <div class="col-12 mb-3">
+                  {{ form.as_p }}
+                  {% if form.instance.image %}
+                    <img src="{{ form.instance.image.url }}" alt="Property Image" class="img-fluid mb-2" style="max-width: 200px;" />
+                  {% endif %}
+                  {% if form.errors %}
+                    <div class="text-danger text-sm">{{ form.errors }}</div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+              <div class="col-12">
+                <input type="submit" value="Save Changes" class="btn btn-primary" me-2" />
+                <a href="{% url 'listings_admin:admin_property_detail' listing.slug %} }" class="btn btn-secondary">Cancel</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

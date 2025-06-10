@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+  <style>
+    .features-1 {
+      padding-bottom: 30px;
+    }
+    
+    .features-1 .row {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .features-1 .col-6.col-lg-3 {
+      display: flex;
+    }
+    
+    .features-1 .box-feature {
+      flex: 1 1 auto;
+      min-height: 100%;
+    }
+  </style>
+  <div class="hero">
+    <div class="hero-slide">
+      <div class="img overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')"></div>
+      <div class="img overlay" style="background-image: url('{% static 'listings/images/hero_bg_2.jpg' %}')"></div>
+      <div class="img overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}')"></div>
+    </div>
+  </div>
+
+  <div class="section bg-light">
+    <div class="container">
+      <div class="row mb-5 align-items-center">
+        <div class="col-lg-6">
+          <h2 class="font-weight-bold text-primary heading">Popular Properties</h2>
+        </div>
+        <div class="col-lg-6 text-lg-end">
+          <p>
+            <a href="{% url 'listings:listing_list' %}" class="btn btn-primary text-white py-3 px-4">View all properties</a>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="property-slider-wrap">
+            <div class="property-slider">
+              {% for listing in listings %}
+                {% include 'listings/components/property_card.html' with listing=listing is_favorite=listing.is_favorite %}
+              {% endfor %}
+            </div>
+            <div id="property-nav" class="controls" tabindex="0" aria-label="Carousel Navigation">
+              <span class="prev" data-controls="prev" aria-controls="property" tabindex="-1">Prev</span>
+              <span class="next" data-controls="next" aria-controls="property" tabindex="-1">Next</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="features-1">
+    <div class="container">
+      <div class="row">
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+          <div class="box-feature">
+            <span class="flaticon-house"></span>
+            <h3 class="mb-3">Our Properties</h3>
+            <p>Explore our diverse range of properties, from cozy apartments to spacious family homes, tailored to your needs.</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
+          <div class="box-feature">
+            <span class="flaticon-building"></span>
+            <h3 class="mb-3">Property for Sale</h3>
+            <p>Find your dream home with our curated selection of properties available for purchase.</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+          <div class="box-feature">
+            <span class="flaticon-house-3"></span>
+            <h3 class="mb-3">Property Listings</h3>
+            <p>Browse our comprehensive listings to discover properties that match your lifestyle and budget.</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
+          <div class="box-feature">
+            <span class="flaticon-house-1"></span>
+            <h3 class="mb-3">House for Sale</h3>
+            <p>Discover beautifully designed houses ready for you to make your own.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section sec-testimonials">
+    <div class="container">
+      <div class="row mb-5 align-items-center">
+        <div class="col-md-6">
+          <h2 class="font-weight-bold heading text-primary mb-4 mb-md-0">Customer Says</h2>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div id="testimonial-nav">
+            <span class="prev" data-controls="prev">Prev</span>
+            <span class="next" data-controls="next">Next</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-4"></div>
+      </div>
+      <div class="testimonial-slider-wrap">
+        <div class="testimonial-slider">
+          {% for review in reviews %}
+            <div class="item">
+              <div class="testimonial">
+                {% if review.user.profile.profile_picture %}
+                  <img src="{{ review.user.profile.profile_picture.url }}" alt="User Image" class="img-fluid rounded-circle profile-image mb-4" />
+                {% else %}
+                  <img src="{% static 'listings/images/default_profile.jpg' %}" alt="User Image" class="img-fluid rounded-circle profile-image mb-4" />
+                {% endif %}
+                <div class="rate">
+                  {% for star in review.rating|times %}
+                    <span class="icon-star text-warning"></span>
+                  {% endfor %}
+                  {% for star in review.rating|remaining_times:5|times %}
+                    <span class="icon-star text-muted"></span>
+                  {% endfor %}
+                </div>
+                <h3 class="h5 text-primary mt-2 mb-4">{{ review.user.get_full_name|default:review.user.username }}</h3>
+                <blockquote>
+                  <p>"{{ review.comment }}"</p>
+                </blockquote>
+                <p class="text-black-50">Posted on {{ review.created_at }}</p>
+              </div>
+            </div>
+          {% empty %}
+            <div class="item">
+              <div class="testimonial">
+                <p class="text-black-50">No reviews available yet.</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section section-4 bg-light">
+    <div class="container">
+      <div class="row justify-content-center text-center mb-5">
+        <div class="col-lg-5">
+          <h2 class="font-weight-bold heading text-primary mb-4">Let's find home that's perfect for you</h2>
+          <p class="text-black-50">Discover the ideal property that suits your lifestyle with our carefully curated listings.</p>
+        </div>
+      </div>
+      <div class="row justify-content-between mb-5">
+        <div class="col-lg-7 mb-5 mb-lg-0 order-lg-2">
+          <div class="img-about dots">
+            <img src="{% static 'listings/images/hero_bg_3.jpg' %}" alt="Image" class="img-fluid" />
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="d-flex feature-h">
+            <span class="wrap-icon me-3"><span class="icon-home2"></span></span>
+            <div class="feature-text">
+              <h3 class="heading">2M Properties</h3>
+              <p class="text-black-50">Choose from millions of properties, from modern apartments to luxurious villas.</p>
+            </div>
+          </div>
+
+          <div class="d-flex feature-h">
+            <span class="wrap-icon me-3"><span class="icon-person"></span></span>
+            <div class="feature-text">
+              <h3 class="heading">Trusted Listings</h3>
+              <p class="text-black-50">Our platform ensures all properties are verified for a seamless buying experience.</p>
+            </div>
+          </div>
+
+          <div class="d-flex feature-h">
+            <span class="wrap-icon me-3"><span class="icon-security"></span></span>
+            <div class="feature-text">
+              <h3 class="heading">Legit Properties</h3>
+              <p class="text-black-50">Every property is thoroughly vetted to guarantee authenticity and quality.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row section-counter mt-5">
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
+          <div class="counter-wrap mb-5 mb-lg-0">
+            <span class="number"><span class="countup text-primary">{{ total_count }}</span></span>
+            <span class="caption text-black-50"># of Listings</span>
+          </div>
+        </div>
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+          <div class="counter-wrap mb-5 mb-lg-0">
+            <span class="number"><span class="countup text-primary">{{ rent_count }}</span></span>
+            <span class="caption text-black-50"># of Rent Properties</span>
+          </div>
+        </div>
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+          <div class="counter-wrap mb-5 mb-lg-0">
+            <span class="number"><span class="countup text-primary">{{ sale_count }}</span></span>
+            <span class="caption text-black-50"># of Sell Properties</span>
+          </div>
+        </div>
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+          <div class="counter-wrap mb-5 mb-lg-0">
+            <span class="number"><span class="countup text-primary">{{ total_users }}</span></span>
+            <span class="caption text-black-50"># of Happy Customers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

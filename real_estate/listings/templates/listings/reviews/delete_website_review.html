@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_1.jpg' %}'); min-height: 300px;">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up">Delete Review</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'listings:website_reviews' %}">Reviews</a>
+              </li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">Delete Review</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section bg-light py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-center mb-4">
+            <h3 class="fw-bold text-primary mb-3">Delete Your Review</h3>
+            <p class="text-muted">Are you sure you want to delete your review?</p>
+          </div>
+
+          <div class="card p-3 shadow-sm border-0">
+            <div class="card-body">
+              <h5 class="card-title fw-bold">
+                <span>
+                  {% for star in review.rating|times %}
+                    <span class="icon-star text-warning"></span>
+                  {% endfor %}
+                  {% for star in review.rating|remaining_times:5|times %}
+                    <span class="icon-star text-muted"></span>
+                  {% endfor %}
+                </span>
+              </h5>
+              <p class="card-text text-muted fst-italic fw-bold">"{{ review.comment }}"</p>
+              <p class="card-text">
+                <small class="text-muted"><i class="fas fa-calendar-alt me-1"></i>Posted on {{ review.created_at }}</small>
+              </p>
+              <form method="post">
+                {% csrf_token %}
+                <div class="mt-4 d-flex gap-3">
+                  <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                  <a href="{% url 'listings:website_reviews' %}" class="btn btn-dark">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

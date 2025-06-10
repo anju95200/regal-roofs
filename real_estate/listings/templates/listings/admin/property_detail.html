@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+  <div class="hero page-inner overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')">
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center mt-5">
+          <h1 class="heading" data-aos="fade-up" title="{{ listing.title }}">{{ listing.title|truncatewords:5 }}</h1>
+          <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+            <ol class="breadcrumb text-center justify-content-center">
+              <li class="breadcrumb-item"><a href="{% url 'listings:home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_dashboard' %}">Admin Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'listings_admin:admin_properties' %}">Properties</a></li>
+              <li class="breadcrumb-item active text-white-50" aria-current="page">{{ listing.title|truncatewords:3 }}</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-up" data-aos-delay="100">
+          <div class="contact-info">
+            <div class="mt-2">
+              <h4 class="mb-2">User</h4>
+              <p>{{ listing.user.username }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Category</h4>
+              <p>{{ listing.category.name|default:"N/A" }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Location</h4>
+              <p>{{ listing.location|default:"N/A" }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Price</h4>
+              <p>${{ listing.price }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Type</h4>
+              <p>{{ listing.listing_type }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="contact-info">
+            <div class="mt-2">
+              <h4 class="mb-2">Status</h4>
+              <p>{{ listing.status }}</p>
+            </div>
+            <div>
+            <div class="mt-4">
+              <h4 class="mb-2">Verified</h4>
+              <p>{{ listing.is_verified|yes_no }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Bedrooms</h4>
+              <p>{{ listing.bedrooms|default:"N/A" }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Bathrooms</h4>
+              <p>{{ listing.bathrooms|default:"N/A" }}</p>
+            </div>
+            <div class="mt-4">
+              <h4 class="mb-2">Area</h4>
+              <p>{{ listing.area|default:"N/A" }} sq ft</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 mt-4" data-aos="fade-up" data-aos-delay="300">
+          <h4 class="mb-2">Images</h4>
+          {% if listing.images.all %}
+            <div class="row">
+              {% for image in listing.images.all %}
+                <div class="col-md-4 mb-3">
+                  <img src="{{ image.image.url }}" alt="Property Image" class="img-fluid" style="max-height: 200px;" />
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p>No images available.</p>
+          {% endif %}
+        </div>
+        <div class="col-lg-12 mt-4" data-aos="fade-up" data-aos-delay="400">
+          <h4 class="mb-2">Description</h4>
+          <p>{{ listing.description }}</p>
+        </div>
+        <div class="col-lg-12 mt-4" data-aos="fade-up" data-aos-delay="500">
+          <h4 class="mb-2">Metadata</h4>
+          <p><strong>Created:</strong> {{ listing.created_at }}</p>
+          <p><strong>Updated:</strong> {{ listing.updated_at }}</p>
+          <p><strong>Views:</strong> {{ listing.view_count }}</p>
+        </div>
+        <div class="col-lg-12 mt-4">
+          <a href="{% url 'listings_admin:admin_property_edit' listing.slug %}" title="Edit Listing" class="btn btn-primary me-2">Edit Property</a>
+          <a href="{% url 'listings_admin:admin_property_delete' listing.slug %}" title="Delete Listing" class="btn btn-danger me-2">Delete Property</a>
+          <a href="{% url 'listings_admin:admin_properties' %}" title="Back to Properties" class="btn btn-secondary">Back to Properties</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
