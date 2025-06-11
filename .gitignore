@@ -1,1 +1,4 @@
 real_estate/venv/
+real_estate/staticfiles/
+real_estate/media/profile_pics/
+real_estate/media/property_images/

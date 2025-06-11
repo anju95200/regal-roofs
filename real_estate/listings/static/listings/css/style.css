@@ -14524,6 +14524,11 @@ textarea {
   font-weight: 700;
   color: #000;
 }
+.property-item .property-content .title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+}
 
 .property-item .property-content .price {
   color: #005555;

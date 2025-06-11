@@ -2,7 +2,12 @@
 {% load custom_filters %}
 {% load babel_filters %}
 
-<div class="property-item {{ custom_class|default:'' }}">
+<div class="property-item {{ custom_class|default:'' }}" style="position: relative;">
+  {% if listing.status == 'sold' or listing.status == 'rented' %}
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 10;">
+      <span style="color: white; font-size: 1.5rem; font-weight: bold; text-transform: uppercase;">{{ listing.status|capfirst }}</span>
+    </div>
+  {% endif %}
   <div class="img-wrapper">
     <!-- Verified Seal -->
     {% if listing.is_verified %}
@@ -13,6 +18,8 @@
     {% if user.is_authenticated and listing.user != user %}
       {% include 'listings/partials/favorite_icon.html' with listing=listing %}
     {% endif %}
+
+    <!-- Status Overlay -->
 
     <a href="{% url 'listings:listing_detail' slug=listing.slug %}" class="img">
       {% if listing.images.first %}
@@ -27,6 +34,7 @@
     <div class="price mb-2">
       <span>{{ listing.price|inr_currency }}</span>
     </div>
+    <span class="title d-block mb-3 text-truncate text-primary">{{ listing.category }} for {{ listing.listing_type|capfirst }}</span>
     <div>
       {% if listing.location.landmark %}
         <span class="d-block mb-2 text-black-50 text-truncate">{{ listing.location.landmark }}</span>
@@ -42,7 +50,7 @@
           {% if listing.bedrooms %}
             <span class="caption">{{ listing.bedrooms }} beds</span>
           {% else %}
-            <span class="caption">- &nbsp; &nbsp; &nbsp; &nbsp;</span>
+            <span class="caption">-</span>
           {% endif %}
         </span>
         <span class="d-block d-flex align-items-center">
@@ -50,7 +58,7 @@
           {% if listing.bathrooms %}
             <span class="caption">{{ listing.bathrooms }} baths</span>
           {% else %}
-            <span class="caption">- &nbsp; &nbsp; &nbsp; &nbsp;</span>
+            <span class="caption">-</span>
           {% endif %}
         </span>
       </div>

@@ -7,6 +7,8 @@ class PropertyListingForm(forms.ModelForm):
     city = forms.CharField(max_length=100, required=True)
     state = forms.CharField(max_length=100, required=True)
     country = forms.CharField(max_length=100, required=True)
+    zip_code = forms.CharField(max_length=6, required=True)
+    
 
     class Meta:
         model = PropertyListing
@@ -21,13 +23,15 @@ class PropertyListingForm(forms.ModelForm):
             self.fields['city'].initial = self.instance.location.city
             self.fields['state'].initial = self.instance.location.state
             self.fields['country'].initial = self.instance.location.country
+            self.fields['zip_code'].initial = self.instance.location.zip_code
 
     def save(self, commit=True):
         location, created = Location.objects.get_or_create(
             landmark=self.cleaned_data['landmark'],
             city=self.cleaned_data['city'],
             state=self.cleaned_data['state'],
-            country=self.cleaned_data['country']
+            country=self.cleaned_data['country'],
+            zip_code=self.cleaned_data['zip_code']
         )
         instance = super().save(commit=False)
         instance.location = location
@@ -92,6 +96,10 @@ class PropertyFilterForm(forms.Form):
     country = forms.ChoiceField(
         required=False,
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_country'})
+    )
+    zip_code = forms.IntegerField(
+        max_value=999999, required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'id': 'id_zip_code'})
     )
 
     def __init__(self, *args, **kwargs):

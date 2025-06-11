@@ -38,6 +38,8 @@ def listing_list(request):
             listings = listings.filter(location__state__icontains=filter_form.cleaned_data['state'])
         if filter_form.cleaned_data['country']:
             listings = listings.filter(location__country__icontains=filter_form.cleaned_data['country'])
+        if filter_form.cleaned_data['zip_code']:
+            listings = listings.filter(zip_code=filter_form.cleaned_data['zip_code'])
 
     # Pagination
     paginator = Paginator(listings, 6)  # Show 6 listings per page

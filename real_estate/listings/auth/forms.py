@@ -155,7 +155,7 @@ class LocationForm(forms.ModelForm):
             'city': forms.TextInput(attrs={'class': 'form-control'}),
             'state': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
-            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'zip_code': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 class UserProfileForm(forms.ModelForm):
