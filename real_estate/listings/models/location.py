@@ -12,7 +12,7 @@ class Location(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.city}-{self.state}-{self.country}")
+            self.slug = slugify(f"{self.landmark}-{self.city}-{self.state}-{self.country}-{self.zip_code}")
         super().save(*args, **kwargs)
 
     def __str__(self):
