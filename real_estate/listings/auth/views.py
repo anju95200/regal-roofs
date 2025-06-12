@@ -10,8 +10,6 @@ from .forms import (
     CustomUserCreationForm, CustomPasswordResetForm, PropertyListingForm, 
     PropertyImageFormSet, CategoryForm, LocationForm, UserForm, UserProfileForm
 )
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
 
 def superuser_required(view_func):
     @login_required
@@ -70,7 +68,7 @@ class CustomPasswordResetView(PasswordResetView):
     subject_template_name = 'listings/auth/password_reset_subject.txt'
     success_url = reverse_lazy('listings:password_reset_done')
     form_class = CustomPasswordResetForm
-    
+
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'listings/auth/password_reset_confirm.html'
     success_url = reverse_lazy('listings:password_reset_complete')
