@@ -12,6 +12,9 @@ from .forms import (
 )
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.conf import settings
 
 def superuser_required(view_func):
     @login_required
@@ -66,28 +69,45 @@ def logout_view(request):
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'listings/auth/password_reset_form.html'
-    email_template_name = 'listings/auth/password_reset_email.html'
+    email_template_name = 'listings/auth/password_reset_email.txt'
+    html_email_template_name = 'listings/auth/password_reset_email.html'
     subject_template_name = 'listings/auth/password_reset_subject.txt'
     success_url = reverse_lazy('listings:password_reset_done')
     form_class = CustomPasswordResetForm
-    
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        user = User.objects.get(email=email, is_active=True)
+
+        if user:
+            context = {
+                'email': user.email,
+                'domain': self.request.get_host(),
+                'site_name': 'Regal Roofs Real Estate',
+                'uid': urlsafe_base64_encode(force_bytes(str(user.pk))),
+                'user': user,
+                'token': self.token_generator.make_token(user),
+                'protocol': 'https' if self.request.is_secure() else 'http',
+            }
+            self.send_mail(
+                self.subject_template_name,
+                self.email_template_name,
+                context,
+                settings.DEFAULT_FROM_EMAIL,
+                user.email,
+                html_email_template_name=self.html_email_template_name,
+            )
+        return redirect(self.get_success_url())
+
     def send_mail(self, subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name=None):
-        # Render the subject
         subject = render_to_string(subject_template_name, context)
-        subject = ''.join(subject.splitlines())  # Remove newlines
-
-        # Render plain text email
         body = render_to_string(email_template_name, context)
-
-        # Create EmailMultiAlternatives object
         email_message = EmailMultiAlternatives(subject=subject, body=body, from_email=from_email, to=[to_email])
 
-        # Render and attach HTML alternative if provided
         if html_email_template_name:
             html_email = render_to_string(html_email_template_name, context)
             email_message.attach_alternative(html_email, 'text/html')
 
-        # Send the email
         email_message.send()
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
