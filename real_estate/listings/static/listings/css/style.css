@@ -9735,6 +9735,14 @@ body {
   border-radius: 0.3rem !important;
 }
 
+.rounded-5 {
+  border-radius: 0.5rem !important;
+}
+
+.rounded-10 {
+  border-radius: 1rem !important;
+}
+
 .rounded-circle {
   border-radius: 50% !important;
 }
@@ -14436,6 +14444,27 @@ textarea {
   position: relative;
 }
 
+.property-slider-wrap .property-item {
+  padding-right: 30px !important;
+}
+
+.property-item .property-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.property-slider-wrap .property-overlay {
+  width: calc(100% - 30px);
+}
+
 .property-slider-wrap .tns-outer .tns-inner,
 .img-property-slide-wrap .tns-outer .tns-inner {
   padding-bottom: 100px !important;
@@ -14524,6 +14553,7 @@ textarea {
   font-weight: 700;
   color: #000;
 }
+
 .property-item .property-content .title {
   font-size: 20px;
   font-weight: 700;
@@ -15260,9 +15290,13 @@ nav[aria-label="breadcrumb"] li:before {
   margin-right: 0;
   margin-left: 0;
 
-  > .col,
-  > [class*="col-"] {
+  >.col,
+  >[class*="col-"] {
     padding-right: 0;
     padding-left: 0;
   }
+}
+
+.toast-container {
+  z-index: 9999;
 }

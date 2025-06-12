@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load custom_filters %}
+{% load babel_filters %}
 {% block content %}
   <style>
     .features-1 {
@@ -21,6 +22,20 @@
       min-height: 100%;
     }
   </style>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div class="toast bg-{{ message.tags }}" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body text-white h6 mb-0">{{ message|title }}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+
   <div class="hero">
     <div class="hero-slide">
       <div class="img overlay" style="background-image: url('{% static 'listings/images/hero_bg_3.jpg' %}')"></div>
@@ -216,4 +231,12 @@
       </div>
     </div>
   </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      const toastEl = document.querySelector('.toast')
+      const toast = new bootstrap.Toast(toastEl)
+      toast.show() // this triggers the toast to appear
+    })
+  </script>
 {% endblock %}

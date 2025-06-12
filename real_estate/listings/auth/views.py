@@ -27,12 +27,15 @@ def superuser_required(view_func):
 
 def register(request):
     if request.user.is_authenticated:
-        return redirect('listings:home') 
+        if request.user.is_superuser:
+            return redirect('listings_admin:admin_dashboard')
+        else:
+            return redirect('listings:home')
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Registration successful!')
             return redirect('listings:home')
         else:
@@ -52,7 +55,7 @@ def login_view(request):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Logged in successfully!')
             if request.user.is_superuser:
                 return redirect('listings_admin:admin_dashboard')
