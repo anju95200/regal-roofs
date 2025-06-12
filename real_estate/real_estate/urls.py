@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/listings/', include('listings.urls_admin', namespace='listings_admin')),  # Admin routes
     path('admin/', admin.site.urls),  # Django admin site
-    path('accounts/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')), # Google account
     path('', include('listings.urls', namespace='listings')),  # Non-admin routes
 ]
 
