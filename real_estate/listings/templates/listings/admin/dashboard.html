@@ -97,4 +97,12 @@
       </div>
     </div>
   </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      const toastEl = document.querySelector('.toast')
+      const toast = new bootstrap.Toast(toastEl)
+      toast.show() // this triggers the toast to appear
+    })
+  </script>
 {% endblock %}
