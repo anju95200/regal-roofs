@@ -71,25 +71,6 @@ class CustomPasswordResetView(PasswordResetView):
     success_url = reverse_lazy('listings:password_reset_done')
     form_class = CustomPasswordResetForm
     
-    def send_mail(self, subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name=None):
-        # Render the subject
-        subject = render_to_string(subject_template_name, context)
-        subject = ''.join(subject.splitlines())  # Remove newlines
-
-        # Render plain text email
-        body = render_to_string(email_template_name, context)
-
-        # Create EmailMultiAlternatives object
-        email_message = EmailMultiAlternatives(subject=subject, body=body, from_email=from_email, to=[to_email])
-
-        # Render and attach HTML alternative if provided
-        if html_email_template_name:
-            html_email = render_to_string(html_email_template_name, context)
-            email_message.attach_alternative(html_email, 'text/html')
-
-        # Send the email
-        email_message.send()
-
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'listings/auth/password_reset_confirm.html'
     success_url = reverse_lazy('listings:password_reset_complete')
