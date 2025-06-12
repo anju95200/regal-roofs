@@ -19,6 +19,19 @@
     </div>
   </div>
 
+  {% if messages %}
+    {% for message in messages %}
+      <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div class="toast bg-{{ message.tags }}" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body text-white h6 mb-0">{{ message|title }}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+
   <div class="section py-5 bg-light">
     <div class="container">
       <div class="row g-4">
