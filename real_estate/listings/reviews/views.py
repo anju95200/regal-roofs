@@ -45,7 +45,15 @@ def edit_website_review(request, review_id):
 
 @login_required
 def delete_website_review(request, review_id):
-    review = get_object_or_404(WebsiteReview, id=review_id, user=request.user)
+    try:
+        if request.user.is_superuser:
+            review = WebsiteReview.objects.get(id=review_id)
+        else:
+            review = WebsiteReview.objects.get(id=review_id, user=request.user)
+    except WebsiteReview.DoesNotExist:
+        messages.error(request, 'The review you are trying to delete does not exist or you lack permission.')
+        return redirect('listings:website_reviews')
+    
     if request.method == 'POST':
         review.delete()
         messages.success(request, 'Your review has been deleted successfully.')

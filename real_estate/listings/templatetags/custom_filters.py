@@ -33,12 +33,13 @@ def yes_no(value):
         return "Yes"
     return "No"
 
-
+# Yellow Star
 @register.filter
 def times(number):
     return range(number)
 
 
+# Grey Star
 @register.filter
 def remaining_times(number, total):
     try:
